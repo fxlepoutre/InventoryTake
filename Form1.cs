@@ -50,22 +50,60 @@ namespace InventoryTake
                 this.btnUpload.Enabled = true;
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
+        private void btnStartCount_Click(object sender, EventArgs e)
         {
             // Generate file name
             try
             {
-                String strFileName = strDataDirectory + System.Net.Dns.GetHostName() + "-" + DateTime.Now.ToString("yyyyMMddhhmmss") + ((this.txtWorkID.Text.Length != 0) ? "-" : "") + this.txtWorkID.Text.ToString() + ".csv";
+                String strFileName = strDataDirectory + System.Net.Dns.GetHostName() + "-Count-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ((this.txtWorkID.Text.Length != 0) ? "-" : "") + this.txtWorkID.Text.ToString() + ".csv";
                 // Open Form 2
-                using (Form2 f2 = new Form2(strFileName))
+                using (Form2Count f2count = new Form2Count(strFileName))
                 {
-                    f2.ShowDialog();
+                    f2count.ShowDialog();
                     this.loadFileNamesInListBox();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Cannot generate file name and launch app.\n" + ex.Message );
+            }
+        }
+
+        private void btnStartTransfer_Click(object sender, EventArgs e)
+        {
+            // Generate file name
+            try
+            {
+                String strFileName = strDataDirectory + System.Net.Dns.GetHostName() + "-Transfer-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ((this.txtWorkID.Text.Length != 0) ? "-" : "") + this.txtWorkID.Text.ToString() + ".csv";
+                // Open Form 2
+                using (Form2Transfer f2transfer = new Form2Transfer(strFileName))
+                {
+                    f2transfer.ShowDialog();
+                    this.loadFileNamesInListBox();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Cannot generate file name and launch app.\n" + ex.Message);
+            }
+        }
+
+        private void btnStartPick_Click(object sender, EventArgs e)
+        {
+            // Generate file name
+            try
+            {
+                String strFileName = strDataDirectory + System.Net.Dns.GetHostName() + "-Pick-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ((this.txtWorkID.Text.Length != 0) ? "-" : "") + this.txtWorkID.Text.ToString() + ".csv";
+                // Open Form 2
+                using (Form2Pick f2pick = new Form2Pick(strFileName))
+                {
+                    f2pick.ShowDialog();
+                    this.loadFileNamesInListBox();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Cannot generate file name and launch app.\n" + ex.Message);
             }
         }
 
@@ -92,11 +130,19 @@ namespace InventoryTake
             this.btnUpload.Enabled = false;
             this.btnUpload.Text = "Uploading...";
             String[] fileEntries = Directory.GetFiles(strDataDirectory);
+            String fileName2;
             foreach (String fileName in fileEntries) {
                 try
                 {
-                    String fileName2 = strUploadDirectory + fileName.Remove(0, strDataDirectory.Length);
-                    if (File.Exists(fileName2)) throw new Exception("Cannot overwrite an existing file, delete target file first.");
+                    if (fileName.Contains("-Count-"))
+                        fileName2 = strUploadDirectory + @"UploadCount\" + fileName.Remove(0, strDataDirectory.Length);
+                    else if (fileName.Contains("-Transfer-"))
+                        fileName2 = strUploadDirectory + @"UploadTransfer\" + fileName.Remove(0, strDataDirectory.Length);
+                    else if (fileName.Contains("-Pick-"))
+                        fileName2 = strUploadDirectory + @"UploadPick\" + fileName.Remove(0, strDataDirectory.Length);
+                    else
+                        fileName2 = strUploadDirectory + fileName.Remove(0, strDataDirectory.Length);
+                    if (File.Exists(fileName2)) fileName2 = fileName2.Replace(".csv", "-retry" + DateTime.Now.ToString("ddHHmmss") + ".csv");
                     File.Move(fileName, fileName2);
                 }
                 catch (Exception ex)

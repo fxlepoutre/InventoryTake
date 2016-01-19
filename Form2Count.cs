@@ -6,12 +6,12 @@ using System.IO;
 
 namespace InventoryTake
 {
-    public partial class Form2 : Form
+    public partial class Form2Count : Form
     {
 
         private String strFileName = String.Empty;
         
-        public Form2(String strInputFileName)
+        public Form2Count(String strInputFileName)
         {
             InitializeComponent();
             strFileName = strInputFileName;
@@ -24,6 +24,7 @@ namespace InventoryTake
             if (!File.Exists(strInputFileName))
             {
                 File.Create(strInputFileName).Close();
+                fnWriteToFile(strInputFileName, "location;pallet_id;sku;qty;notes;timestamp" + Environment.NewLine);
             }
 
             StreamWriter swFile =
@@ -49,7 +50,7 @@ namespace InventoryTake
         private void button1_Click(object sender, EventArgs e)
         {
             // Save data to file
-            String strNewLine = this.textBox1.Text + ";" + this.textBox2.Text + ";" + this.textBox3.Text + ";" + this.textBox4.Text + ";" + this.textBox5.Text + ";" + Environment.NewLine;
+            String strNewLine = this.textBox1.Text + ";" + this.textBox2.Text + ";" + this.textBox3.Text + ";" + this.textBox4.Text + ";" + this.textBox5.Text + ";" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
             fnWriteToFile(strFileName, strNewLine);
             // Close Window
             this.Close();
@@ -58,7 +59,7 @@ namespace InventoryTake
         private void button2_Click(object sender, EventArgs e)
         {
             // Save data to file
-            String strNewLine = this.textBox1.Text + ";" + this.textBox2.Text + ";" + this.textBox3.Text + ";" + this.textBox4.Text + ";" + this.textBox5.Text + ";" + Environment.NewLine;
+            String strNewLine = this.textBox1.Text + ";" + this.textBox2.Text + ";" + this.textBox3.Text + ";" + this.textBox4.Text + ";" + this.textBox5.Text + ";" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
             fnWriteToFile(strFileName, strNewLine);
 
             // Clear fields
